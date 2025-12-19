@@ -15,5 +15,6 @@ public class ImageSaver
             Directory.CreateDirectory(directory);
 
         bitmap.Save(filePath, ImageFormat.Png);
+        bitmap.Dispose();
     }
 }

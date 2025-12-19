@@ -6,13 +6,7 @@ namespace TagsCloud.Test.WordsPreprocessorTests.WordsHandlersTests;
 [TestFixture]
 public class LowercaseHandlerTests
 {
-    [SetUp]
-    public void SetUp()
-    {
-        text = ["Hello", "KONTUR", "test"];
-    }
-
-    private List<string> text;
+    private readonly List<string> text = ["Hello", "KONTUR", "test"];
 
     [Test]
     public void Handle_ShouldConvertAllWordsToLowercase()

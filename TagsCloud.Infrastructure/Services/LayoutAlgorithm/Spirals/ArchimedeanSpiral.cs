@@ -5,30 +5,17 @@ namespace TagsCloud.Infrastructure.Services.LayoutAlgorithm.Spirals;
 
 public class ArchimedeanSpiral : ISpiral
 {
-    private readonly float angleStep;
-    private readonly Point center;
-    private readonly float spiralStep;
+    private const float AngleStep = 0.1f;
+    private const float SpiralStep = 0.5f;
     private double angle;
-
-    public ArchimedeanSpiral(Point center, float angleStep = 0.1f, float spiralStep = 0.5f)
-    {
-        if (angleStep <= 0)
-            throw new ArgumentException("Angle step must be positive", nameof(angleStep));
-
-        if (spiralStep <= 0)
-            throw new ArgumentException("Radius step must be positive", nameof(spiralStep));
-
-        this.center = center;
-        this.angleStep = angleStep;
-        this.spiralStep = spiralStep;
-    }
+    public Point Center { get; init; }
 
     public Point GetNextPoint()
     {
-        var radius = spiralStep * angle;
-        var x = center.X + (int)(radius * Math.Cos(angle));
-        var y = center.Y + (int)(radius * Math.Sin(angle));
-        angle += angleStep;
+        var radius = SpiralStep * angle;
+        var x = Center.X + (int)(radius * Math.Cos(angle));
+        var y = Center.Y + (int)(radius * Math.Sin(angle));
+        angle += AngleStep;
 
         return new Point(x, y);
     }

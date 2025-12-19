@@ -1,49 +1,56 @@
 using System.Drawing;
 using TagsCloud.App.Abstractions.ImageGeneration;
-using TagsCloud.Domain.Models;
+using TagsCloud.App.Abstractions.LayoutAlgorithm;
+using TagsCloud.App.Abstractions.WordsProcessing;
+using TagsCloud.App.Models;
+using TagsCloud.Infrastructure.Services.WordsProcessing;
 
 namespace TagsCloud.Infrastructure.Services.ImageGeneration.CloudVisualizers;
 
 public class FileCloudVisualizer : ICloudVisualizer
 {
-    private readonly ImageCreator creator;
-    private readonly ImageOptions options;
+    private readonly IWordsPreprocessor wordsPreprocessor;
 
-    public FileCloudVisualizer(ImageCreator creator, ImageOptions options)
+    public FileCloudVisualizer(IWordsPreprocessor wordsPreprocessor)
     {
-        this.creator = creator;
-        this.options = options;
+        this.wordsPreprocessor = wordsPreprocessor;
     }
 
-    public void Visualize(List<Rectangle> rectangles)
+    public void VisualizeWordsWithOptions(List<string> words, ProgramOptions options)
     {
-        throw new NotImplementedException();
+        var handledWords = wordsPreprocessor.Process(words);
+
+        var wordsCounts = WordsCounter.GetWordsCounts(handledWords);
+
+        var wordsSizes = WordsMeasurer.GetWordsSizes(wordsCounts, options.ImageOptions.Font);
+
+        var workingDirectory = Environment.CurrentDirectory;
+        var projectDirectory = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
+
+        CreateAndSave(wordsSizes, wordsCounts, projectDirectory, options);
     }
 
-    /* Логика из TagCloud 1
-    public void CreateAndSave(int countRectangles, int countImage, string currentDirectoryPath)
+    private void CreateAndSave
+    (
+        Dictionary<string, Size> wordsSizes,
+        Dictionary<string, int> wordsCounts,
+        string currentDirectoryPath,
+        ProgramOptions options)
     {
-        for (var i = 0; i < countImage; i++)
-        {
-            var rectangles = PutRectangles(countRectangles);
-            var image = creator.CreateImage(rectangles);
-            var imageName = $"cloud_{i + 1}_with_{countRectangles}_rectangles";
-            ImageSaver.Save($"{currentDirectoryPath}/Images/{imageName}.png", image);
-            layouter.Reset();
-        }
+        var rectangles = PutRectangles(wordsSizes.Values.ToList(), options.Algorithm);
+        var image = ImageCreator.CreateImage(wordsSizes, wordsCounts, rectangles, options.ImageOptions);
+        var imageName = $"cloud_with_{rectangles.Count}_words";
+
+        ImageSaver.Save($"{currentDirectoryPath}/Images/{imageName}.{options.ImageOptions.ImageFormat}", image);
+
+        options.Algorithm.Reset();
     }
 
-    private List<Rectangle> PutRectangles(int countRectangles)
+    private List<Rectangle> PutRectangles(List<Size> wordsSizes, ICloudLayouter layouter)
     {
-        var random = new Random();
         var result = new List<Rectangle>();
-        for (var i = 0; i < countRectangles; i++)
-        {
-            var width = random.Next(5, 20);
-            var height = random.Next(5, 20);
-            result.Add(layouter.PutNextRectangle(new Size(width, height)));
-        }
+        foreach (var size in wordsSizes) result.Add(layouter.PutNextRectangle(size));
 
         return result;
-    }*/
+    }
 }

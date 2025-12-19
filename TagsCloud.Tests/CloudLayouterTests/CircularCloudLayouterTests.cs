@@ -1,25 +1,26 @@
 using System.Drawing;
 using FluentAssertions;
-using NUnit.Framework.Interfaces;
-using TagsCloud.Domain.Models;
 using TagsCloud.Infrastructure.Extensions;
-using TagsCloud.Infrastructure.Services.ImageGeneration;
 using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
+using TagsCloud.Infrastructure.Services.LayoutAlgorithm.Spirals;
 
 namespace TagsCloud.Test.CloudLayouterTests;
 
+//TODO: CircularCloudLayouterTests.cs тесты на краевые случаи
+//TODO: CircularCloudLayouterTests.cs логика схранения картинки не должна быть в teardown, нарушается srp
 [TestFixture]
-public class Tests
+public class CloudLayouterTests
 {
-    [SetUp]
-    public void Setup()
+    private readonly CircularCloudLayouter cloudLayouter;
+    private readonly Point center;
+
+    public CloudLayouterTests()
     {
         center = new Point(0, 0);
-        cloudLayouter = new CircularCloudLayouter(center);
-        visualizer = new ImageCreator();
+        cloudLayouter = new CircularCloudLayouter(new ArchimedeanSpiral());
     }
 
-    [TearDown]
+    /*[TearDown]
     public void TearDown()
     {
         var currentContext = TestContext.CurrentContext;
@@ -29,15 +30,10 @@ public class Tests
         var workingDirectory = currentContext.WorkDirectory;
         var currentProject = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
         var filePath = Path.Combine(currentProject, "Fails", $"{currentContext.Test.Name}.png");
-        ImageSaver.Save(filePath, visualizer.CreateImage(cloudLayouter.Rectangles, new ImageOptions()));
+        ImageSaver.Save(filePath, ImageCreator.CreateImage(cloudLayouter.Rectangles, new ImageOptions()));
         TestContext.WriteLine($"Tag cloud visualization saved to file {filePath}");
         TestContext.AddTestAttachment(filePath);
-    }
-
-    private CircularCloudLayouter cloudLayouter;
-    private ImageCreator visualizer;
-    private Point center;
-
+    }*/
 
     [Test]
     public void PutNextRectangle_ShouldThrowArgumentException_WhenInvalidSize()

@@ -4,15 +4,20 @@ namespace TagsCloud.Infrastructure.Services.WordsProcessing.WordsPreprocessors;
 
 public class DefaultWordsPreprocessor : IWordsPreprocessor
 {
-    private IWordsHandler wordsHandler;
+    private readonly IEnumerable<IWordsHandler> wordsHandlers;
 
-    public DefaultWordsPreprocessor(IWordsHandler wordsHandler)
+    public DefaultWordsPreprocessor(IEnumerable<IWordsHandler> wordsHandlers)
     {
-        this.wordsHandler = wordsHandler;
+        this.wordsHandlers = wordsHandlers;
     }
 
     public List<string> Process(List<string> words)
     {
-        throw new NotImplementedException();
+        var handlersList = wordsHandlers.ToList();
+
+        for (var i = 0; i < handlersList.Count - 1; i++)
+            handlersList[i].NextHandler = handlersList[i + 1];
+
+        return handlersList.First().Handle(words);
     }
 }

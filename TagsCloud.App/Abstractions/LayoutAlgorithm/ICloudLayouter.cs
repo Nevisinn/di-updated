@@ -5,4 +5,5 @@ namespace TagsCloud.App.Abstractions.LayoutAlgorithm;
 public interface ICloudLayouter
 {
     public Rectangle PutNextRectangle(Size rectangleSize);
+    public void Reset();
 }

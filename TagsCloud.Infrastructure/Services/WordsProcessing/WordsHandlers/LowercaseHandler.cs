@@ -4,13 +4,12 @@ namespace TagsCloud.Infrastructure.Services.WordsProcessing.WordsHandlers;
 
 public class LowercaseHandler : IWordsHandler
 {
+    public IWordsHandler? NextHandler { get; set; }
+
     public List<string> Handle(List<string> words)
     {
-        throw new NotImplementedException();
-    }
+        var handledWords = words.Select(w => w.ToLower()).ToList();
 
-    public IWordsHandler SetNext(IWordsHandler handler)
-    {
-        throw new NotImplementedException();
+        return NextHandler != null ? NextHandler.Handle(handledWords) : handledWords;
     }
 }

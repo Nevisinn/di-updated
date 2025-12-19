@@ -2,19 +2,18 @@ using System.Drawing;
 using System.Numerics;
 using TagsCloud.App.Abstractions.LayoutAlgorithm;
 using TagsCloud.Infrastructure.Extensions;
-using TagsCloud.Infrastructure.Services.LayoutAlgorithm.Spirals;
 
 namespace TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
 
 public class CircularCloudLayouter : ICloudLayouter
 {
     private readonly Point center;
-    private readonly ArchimedeanSpiral spiral;
+    private readonly ISpiral spiral;
 
-    public CircularCloudLayouter(Point center)
+    public CircularCloudLayouter(ISpiral spiral)
     {
-        this.center = center;
-        spiral = new ArchimedeanSpiral(center);
+        center = new Point(0, 0);
+        this.spiral = spiral;
     }
 
     public List<Rectangle> Rectangles { get; } = [];
@@ -22,7 +21,7 @@ public class CircularCloudLayouter : ICloudLayouter
     public Rectangle PutNextRectangle(Size rectangleSize)
     {
         if (rectangleSize.Width <= 0 || rectangleSize.Height <= 0)
-            throw new ArgumentException("Rectangle size must be positive");
+            throw new ArgumentException("Размер прямоугольника должен быть больше нуля");
 
         var rect = PlaceNext(rectangleSize);
         rect = MoveCloserToCenter(rect);
@@ -65,17 +64,12 @@ public class CircularCloudLayouter : ICloudLayouter
             var unitDirection = Vector2.Normalize(direction);
             var offset = unitDirection * stepSize;
             var testRect = moved with { X = (int)(moved.X + offset.X), Y = (int)(moved.Y + offset.Y) };
-            if (IntersectsWithOthers(testRect))
+            if (Rectangles.Any(r => r.IntersectsWith(testRect)))
                 break;
 
             moved = testRect;
         }
 
         return moved;
-    }
-
-    private bool IntersectsWithOthers(Rectangle rect)
-    {
-        return Rectangles.Any(r => r.IntersectsWith(rect));
     }
 }

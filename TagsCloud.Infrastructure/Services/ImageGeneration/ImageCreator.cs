@@ -1,25 +1,33 @@
 using System.Drawing;
-using TagsCloud.Domain.Models;
+using TagsCloud.App.Models;
+using Font = System.Drawing.Font;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace TagsCloud.Infrastructure.Services.ImageGeneration;
 
 public class ImageCreator
 {
-    public Bitmap CreateImage(List<Rectangle> rectangles, ImageOptions options)
+    public static Bitmap CreateImage
+    (
+        Dictionary<string, Size> wordsSizes,
+        Dictionary<string, int> wordsCounts,
+        List<Rectangle> rectangles,
+        ImageOptions imageOptions
+    )
     {
-        var bitmap = new Bitmap(options.ImageSize.Width, options.ImageSize.Height);
-        var graphics = Graphics.FromImage(bitmap);
-        graphics.Clear(options.BackgroundColor);
-        using var pen = new Pen(options.RectangleBorderColor, 2);
-        using var brush = new SolidBrush(options.RectangleFillColor);
-        var offsetX = options.ImageSize.Width / 2;
-        var offsetY = options.ImageSize.Height / 2;
+        var bitmap = new Bitmap(imageOptions.ImageSize.Width, imageOptions.ImageSize.Height);
+        using var graphics = Graphics.FromImage(bitmap);
+        graphics.Clear(imageOptions.BackgroundColor);
+        graphics.TranslateTransform(imageOptions.ImageSize.Width / 2f, imageOptions.ImageSize.Height / 2f);
+        var brush = imageOptions.ColorScheme.GetColorScheme(imageOptions);
+        var words = wordsSizes.Keys.ToList();
 
-        foreach (var rect in rectangles)
+        for (var i = 0; i < rectangles.Count; i++)
         {
-            var shiftedRect = rect with { X = rect.X + offsetX, Y = rect.Y + offsetY };
-            graphics.FillRectangle(brush, shiftedRect);
-            graphics.DrawRectangle(pen, shiftedRect);
+            var word = words[i];
+            var tmpFont = new Font(imageOptions.Font.Name, wordsCounts[word] + imageOptions.Font.Size);
+
+            graphics.DrawString(word, tmpFont, brush, rectangles[i]);
         }
 
         return bitmap;

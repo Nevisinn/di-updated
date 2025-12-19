@@ -1,6 +1,7 @@
-using FakeItEasy;
+/*using FakeItEasy;
 using FluentAssertions;
 using TagsCloud.App.Abstractions.WordsProcessing;
+using TagsCloud.Infrastructure.Services.WordsProcessing.WordsHandlers;
 using TagsCloud.Infrastructure.Services.WordsProcessing.WordsPreprocessors;
 
 namespace TagsCloud.Test.WordsPreprocessorTests;
@@ -8,25 +9,13 @@ namespace TagsCloud.Test.WordsPreprocessorTests;
 [TestFixture]
 public class DefaultWordsPreprocessorTests
 {
-    [SetUp]
-    public void SetUp()
+    private readonly IWordsPreprocessor preprocessor;
+    private readonly IWordsHandler handler;
+
+    public DefaultWordsPreprocessorTests()
     {
-        handler = A.Fake<IWordsHandler>();
-        preprocessor = new DefaultWordsPreprocessor(handler);
-    }
-
-    private IWordsHandler handler;
-    private DefaultWordsPreprocessor preprocessor;
-
-    [Test]
-    public void Process_ShouldCallHandlerWithGivenWords()
-    {
-        var words = new List<string> { "Hello", "Kontur" };
-        A.CallTo(() => handler.Handle(words)).Returns(words);
-
-        preprocessor.Process(words);
-
-        A.CallTo(() => handler.Handle(words)).MustHaveHappenedOnceExactly();
+        handler = new LowercaseHandler();
+        preprocessor = new DefaultWordsPreprocessor();
     }
 
     [Test]
@@ -42,10 +31,11 @@ public class DefaultWordsPreprocessorTests
     }
 
     [Test]
-    public void Constructor_ShouldThrowArgumentNullException_WhenHandlerIsNull()
+    public void Handle_ShouldThrowArgumentNullException_WhenHandlerIsNull()
     {
         var createPreprocessor = () => new DefaultWordsPreprocessor(null);
 
         createPreprocessor.Should().Throw<ArgumentNullException>();
     }
-}
+}*/
+

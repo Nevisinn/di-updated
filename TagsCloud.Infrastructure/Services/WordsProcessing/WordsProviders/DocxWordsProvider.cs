@@ -3,11 +3,11 @@ using TagsCloud.App.Abstractions.WordsProcessing;
 
 namespace TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
 
-public class DocWordsProvider : IWordsProvider
+public class DocxWordsProvider : IWordsProvider
 {
     private readonly FileValidator fileValidator;
 
-    public DocWordsProvider(FileValidator fileValidator)
+    public DocxWordsProvider(FileValidator fileValidator)
     {
         this.fileValidator = fileValidator;
     }
@@ -19,10 +19,9 @@ public class DocWordsProvider : IWordsProvider
         var app = new ApplicationClass();
         var document = app.Documents.Open(path);
         var text = document.Content.Text;
-        text = text.Replace("\r", "");
 
-        return text.Split("\n").ToList();
+        return text.Split('\n').ToList();
     }
 
-    public string FileFormat => "doc";
+    public string FileFormat => "docx";
 }

@@ -1,0 +1,17 @@
+using Autofac;
+using TagsCloud.App.Abstractions.LayoutAlgorithm;
+using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
+using TagsCloud.Infrastructure.Services.LayoutAlgorithm.Spirals;
+
+namespace TagsCloud.Modules;
+
+public class LayoutAlgorithmModule : Module
+{
+    protected override void Load(ContainerBuilder builder)
+    {
+        builder.RegisterType<ArchimedeanSpiral>().As<ISpiral>();
+
+        builder.RegisterType<CircularCloudLayouter>()
+            .Named<ICloudLayouter>("Circular");
+    }
+}

@@ -1,0 +1,47 @@
+using System.Drawing;
+using TagsCloud.App.Abstractions.ImageGeneration;
+using TagsCloud.App.Abstractions.LayoutAlgorithm;
+using TagsCloud.App.Abstractions.WordsProcessing;
+using TagsCloud.App.Models;
+using TagsCloud.Dtos;
+using TagsCloud.Infrastructure.Services.ImageGeneration;
+
+namespace TagsCloud;
+
+public class ProgramOptionsMapper
+{
+    private readonly IColorProvider colorProvider;
+    private readonly IFontProvider fontProvider;
+    private readonly ServiceResolver resolver;
+
+    public ProgramOptionsMapper
+    (
+        ServiceResolver resolver,
+        IColorProvider colorProvider,
+        IFontProvider fontProvider
+    )
+    {
+        this.resolver = resolver;
+        this.colorProvider = colorProvider;
+        this.fontProvider = fontProvider;
+    }
+
+    public ProgramOptions Map(ConsoleProgramOptionsDto dto)
+    {
+        return new ProgramOptions
+        {
+            FilePath = dto.FilePath,
+            ImageOptions = new ImageOptions
+            {
+                BackgroundColor = colorProvider.GetColor(dto.BackgroundColor),
+                ColorScheme = resolver.Resolve<IColorSchemeProvider>(dto.ColorScheme),
+                Font = fontProvider.GetFont(dto.FontName, dto.FontSize),
+                ImageFormat = ImageFormatParser.Parse(dto.ImageFormat),
+                ImageSize = new Size(dto.ImageWidth, dto.ImageHeight),
+                TextColors = colorProvider.GetColors(dto.TextColor.Split(',').ToArray())
+            },
+            Algorithm = resolver.Resolve<ICloudLayouter>(dto.AlgorithmName),
+            WordsProvider = resolver.Resolve<IWordsProvider>(Path.GetExtension(dto.FilePath).Trim('.'))
+        };
+    }
+}

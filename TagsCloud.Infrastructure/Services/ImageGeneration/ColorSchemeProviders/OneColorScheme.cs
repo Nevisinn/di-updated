@@ -1,12 +1,16 @@
 using System.Drawing;
 using TagsCloud.App.Abstractions.ImageGeneration;
+using TagsCloud.App.Models;
 
 namespace TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
 
 public class OneColorScheme : IColorSchemeProvider
 {
-    public Brush GetBrush()
+    public Brush GetColorScheme(ImageOptions imageOptions)
     {
-        throw new NotImplementedException();
+        if (imageOptions.TextColors.Length != 1)
+            throw new ArgumentException("Для Solid заливки необходимо указать только 1 цвет");
+
+        return new SolidBrush(imageOptions.TextColors[0]);
     }
 }

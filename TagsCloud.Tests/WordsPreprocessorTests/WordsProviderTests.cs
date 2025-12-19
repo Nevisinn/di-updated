@@ -8,17 +8,6 @@ namespace TagsCloud.Test.WordsPreprocessorTests;
 [TestFixture(typeof(TxtWordsProvider))]
 public class WordsProviderTests<T> where T : IWordsProvider, new()
 {
-    [SetUp]
-    public void SetUp()
-    {
-        provider = new T();
-        var tempFile = Path.Combine(Path.GetTempPath(), "test");
-        if (typeof(T) == typeof(TxtWordsProvider))
-            filePath = tempFile + ".txt";
-        else if (typeof(T) == typeof(DocWordsProvider))
-            filePath = tempFile + ".docx";
-    }
-
     [TearDown]
     public void TearDown()
     {
@@ -27,7 +16,13 @@ public class WordsProviderTests<T> where T : IWordsProvider, new()
     }
 
     private T provider;
-    private string filePath = "";
+    private string filePath;
+
+    public WordsProviderTests()
+    {
+        provider = new T();
+        filePath = Path.Combine(Path.GetTempPath(), "test", provider.FileFormat);
+    }
 
     [Test]
     public void ReadFile_ShouldReturnExpectedWords()
@@ -62,5 +57,37 @@ public class WordsProviderTests<T> where T : IWordsProvider, new()
         var readFile = () => provider.ReadFile(filePath);
 
         readFile.Should().Throw<InvalidDataException>("Файл пуст");
+    }
+
+    [Test]
+    public void ReadFile_ShouldThrow_WhenWordsInLine()
+    {
+        var inputText = "Hello, Kontur, test";
+
+        File.WriteAllText(filePath, inputText);
+        var readFile = () => provider.ReadFile(filePath);
+
+        readFile.Should()
+            .Throw<InvalidDataException>("Источником данных должен быть файл со словами по одному в строке.");
+    }
+
+    [Test]
+    public void ReadFile_ShouldThrow_WhenFilePathIsNull()
+    {
+        filePath = null;
+
+        var readFile = () => provider.ReadFile(filePath);
+
+        readFile.Should().Throw<ArgumentException>("Путь до файла не валиден");
+    }
+
+    [Test]
+    public void ReadFile_ShouldThrow_WhenFilePathIsEmpty()
+    {
+        filePath = "";
+
+        var readFile = () => provider.ReadFile(filePath);
+
+        readFile.Should().Throw<ArgumentException>("Путь до файла не валиден");
     }
 }
