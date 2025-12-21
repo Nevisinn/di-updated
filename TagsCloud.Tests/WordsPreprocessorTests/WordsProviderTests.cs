@@ -1,27 +1,29 @@
 using FluentAssertions;
 using TagsCloud.App.Abstractions.WordsProcessing;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
 
 namespace TagsCloud.Test.WordsPreprocessorTests;
 
-[TestFixture(typeof(DocWordsProvider))]
-[TestFixture(typeof(TxtWordsProvider))]
-public class WordsProviderTests<T> where T : IWordsProvider, new()
+public abstract class WordsProviderTests
 {
+    private readonly IWordsProvider provider;
+    private readonly IDocumentWriter writer;
+    private string filePath;
+
+    public WordsProviderTests(IWordsProvider provider, IDocumentWriter writer)
+    {
+        this.provider = provider;
+        this.writer = writer;
+        var currentContext = TestContext.CurrentContext;
+        var workingDirectory = currentContext.WorkDirectory;
+        var currentProject = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
+        filePath = Path.Combine(currentProject, $"test.{provider.FileFormat}");
+    }
+
     [TearDown]
     public void TearDown()
     {
         if (File.Exists(filePath))
             File.Delete(filePath);
-    }
-
-    private T provider;
-    private string filePath;
-
-    public WordsProviderTests()
-    {
-        provider = new T();
-        filePath = Path.Combine(Path.GetTempPath(), "test", provider.FileFormat);
     }
 
     [Test]
@@ -33,7 +35,7 @@ public class WordsProviderTests<T> where T : IWordsProvider, new()
             "Hello", "Kontur", "test"
         };
 
-        File.WriteAllText(filePath, inputText);
+        writer.WriteText(filePath, inputText);
         var words = provider.ReadFile(filePath);
 
         words.Should().BeEquivalentTo(expectedWords);
@@ -52,23 +54,11 @@ public class WordsProviderTests<T> where T : IWordsProvider, new()
     [Test]
     public void ReadFile_ShouldThrow_WhenFileIsEmpty()
     {
-        File.WriteAllText(filePath, string.Empty);
+        writer.WriteText(filePath, string.Empty);
 
         var readFile = () => provider.ReadFile(filePath);
 
         readFile.Should().Throw<InvalidDataException>("Файл пуст");
-    }
-
-    [Test]
-    public void ReadFile_ShouldThrow_WhenWordsInLine()
-    {
-        var inputText = "Hello, Kontur, test";
-
-        File.WriteAllText(filePath, inputText);
-        var readFile = () => provider.ReadFile(filePath);
-
-        readFile.Should()
-            .Throw<InvalidDataException>("Источником данных должен быть файл со словами по одному в строке.");
     }
 
     [Test]

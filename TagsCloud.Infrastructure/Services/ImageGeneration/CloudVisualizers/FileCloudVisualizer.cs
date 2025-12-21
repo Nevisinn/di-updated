@@ -38,7 +38,7 @@ public class FileCloudVisualizer : ICloudVisualizer
         ProgramOptions options)
     {
         var rectangles = PutRectangles(wordsSizes.Values.ToList(), options.Algorithm);
-        var image = ImageCreator.CreateImage(wordsSizes, wordsCounts, rectangles, options.ImageOptions);
+        var image = ImageCreator.CreateImageWithWordsLayout(wordsSizes, wordsCounts, rectangles, options.ImageOptions);
         var imageName = $"cloud_with_{rectangles.Count}_words";
 
         ImageSaver.Save($"{currentDirectoryPath}/Images/{imageName}.{options.ImageOptions.ImageFormat}", image);
@@ -49,7 +49,8 @@ public class FileCloudVisualizer : ICloudVisualizer
     private List<Rectangle> PutRectangles(List<Size> wordsSizes, ICloudLayouter layouter)
     {
         var result = new List<Rectangle>();
-        foreach (var size in wordsSizes) result.Add(layouter.PutNextRectangle(size));
+        foreach (var size in wordsSizes)
+            result.Add(layouter.PutNextRectangle(size));
 
         return result;
     }

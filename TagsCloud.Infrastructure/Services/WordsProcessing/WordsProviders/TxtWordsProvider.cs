@@ -16,9 +16,15 @@ public class TxtWordsProvider : IWordsProvider
         fileValidator.Validate(path, FileFormat);
 
         var text = File.ReadAllText(path);
-        text = text.Replace("\r", "");
+        var words = text
+            .Replace("\r", "")
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .ToList();
 
-        return text.Split("\n").ToList();
+        if (words.Count == 0)
+            throw new InvalidDataException("Файл пуст");
+
+        return words;
     }
 
     public string FileFormat => "txt";

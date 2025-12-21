@@ -18,11 +18,17 @@ public class WordProcessingModule : Module
 
         builder.RegisterType<FileValidator>().As<IFileValidator>();
 
-        builder.RegisterType<LowercaseHandler>().As<IWordsHandler>();
-        builder.RegisterType<BoringWordsHandler>().As<IWordsHandler>()
-            .WithParameter(new TypedParameter(typeof(HashSet<string>), new HashSet<string> { "hello" }));
+        builder.Register(c =>
+        {
+            var workingDirectory = Environment.CurrentDirectory;
+            var projectDirectory = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
+            var boringWords =
+                File.ReadAllText(Path.Combine($"{projectDirectory}", "BoringWordsFiles", "BoringWords.txt"));
+            return new BoringWordsHandler(boringWords.Split(',').ToHashSet());
+        }).As<IWordsHandler>();
 
-        builder.RegisterType<WordsHandler>().As<IWordsHandler>();
+        /*builder.RegisterType<BoringWordsHandler>().As<IWordsHandler>()
+            .WithParameter(new TypedParameter(typeof(HashSet<string>), new HashSet<string> { "hello" }));*/
 
         builder.RegisterType<DefaultWordsPreprocessor>().As<IWordsPreprocessor>();
 

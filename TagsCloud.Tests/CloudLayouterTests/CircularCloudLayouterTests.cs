@@ -1,26 +1,20 @@
 using System.Drawing;
+using System.Drawing.Imaging;
 using FluentAssertions;
+using NUnit.Framework.Interfaces;
+using TagsCloud.App.Models;
 using TagsCloud.Infrastructure.Extensions;
+using TagsCloud.Infrastructure.Services.ImageGeneration;
+using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
 using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
 using TagsCloud.Infrastructure.Services.LayoutAlgorithm.Spirals;
 
 namespace TagsCloud.Test.CloudLayouterTests;
 
-//TODO: CircularCloudLayouterTests.cs тесты на краевые случаи
-//TODO: CircularCloudLayouterTests.cs логика схранения картинки не должна быть в teardown, нарушается srp
 [TestFixture]
 public class CloudLayouterTests
 {
-    private readonly CircularCloudLayouter cloudLayouter;
-    private readonly Point center;
-
-    public CloudLayouterTests()
-    {
-        center = new Point(0, 0);
-        cloudLayouter = new CircularCloudLayouter(new ArchimedeanSpiral());
-    }
-
-    /*[TearDown]
+    [TearDown]
     public void TearDown()
     {
         var currentContext = TestContext.CurrentContext;
@@ -30,10 +24,31 @@ public class CloudLayouterTests
         var workingDirectory = currentContext.WorkDirectory;
         var currentProject = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
         var filePath = Path.Combine(currentProject, "Fails", $"{currentContext.Test.Name}.png");
-        ImageSaver.Save(filePath, ImageCreator.CreateImage(cloudLayouter.Rectangles, new ImageOptions()));
+        var image = ImageCreator.CreateImageWithRectanglesLayout(cloudLayouter.Rectangles, imageOptions);
+        ImageSaver.Save(filePath, image);
+
         TestContext.WriteLine($"Tag cloud visualization saved to file {filePath}");
         TestContext.AddTestAttachment(filePath);
-    }*/
+    }
+
+    private readonly CircularCloudLayouter cloudLayouter;
+    private readonly ImageOptions imageOptions;
+    private readonly Point center;
+
+    public CloudLayouterTests()
+    {
+        center = new Point(0, 0);
+        cloudLayouter = new CircularCloudLayouter(new ArchimedeanSpiral());
+        imageOptions = new ImageOptions
+        {
+            BackgroundColor = Color.Black,
+            ImageFormat = ImageFormat.Png,
+            ColorScheme = new OneColorScheme(),
+            ImageSize = new Size(1000, 1000),
+            Font = new Font("Arial", 14),
+            TextColors = [Color.Red]
+        };
+    }
 
     [Test]
     public void PutNextRectangle_ShouldThrowArgumentException_WhenInvalidSize()

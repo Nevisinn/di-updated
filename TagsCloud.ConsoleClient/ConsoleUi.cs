@@ -24,7 +24,7 @@ public class ConsoleUi
                 {
                     var programOptions = mapper.Map(options);
 
-                    var words = programOptions.WordsProvider.ReadFile(options.FilePath);
+                    var words = programOptions.WordsProvider.ReadFile(options.InputWordsFilePath);
 
                     visualizer.VisualizeWordsWithOptions(words, programOptions);
                 }

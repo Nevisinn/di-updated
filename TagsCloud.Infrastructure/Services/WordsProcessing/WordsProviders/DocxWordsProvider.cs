@@ -1,13 +1,13 @@
-using Microsoft.Office.Interop.Word;
+using Spire.Doc;
 using TagsCloud.App.Abstractions.WordsProcessing;
 
 namespace TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
 
 public class DocxWordsProvider : IWordsProvider
 {
-    private readonly FileValidator fileValidator;
+    private readonly IFileValidator fileValidator;
 
-    public DocxWordsProvider(FileValidator fileValidator)
+    public DocxWordsProvider(IFileValidator fileValidator)
     {
         this.fileValidator = fileValidator;
     }
@@ -16,11 +16,18 @@ public class DocxWordsProvider : IWordsProvider
     {
         fileValidator.Validate(path, FileFormat);
 
-        var app = new ApplicationClass();
-        var document = app.Documents.Open(path);
-        var text = document.Content.Text;
+        using var document = new Document();
+        document.LoadFromFile(path);
+        var text = document.GetText();
+        var words = text
+            .Replace("\r", "")
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .ToList();
 
-        return text.Split('\n').ToList();
+        if (words.Count == 0)
+            throw new InvalidDataException("Файл пуст");
+
+        return words;
     }
 
     public string FileFormat => "docx";

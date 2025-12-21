@@ -6,6 +6,6 @@ public class TxtWriter : IDocumentWriter
 {
     public void WriteText(string path, string text)
     {
-        throw new NotImplementedException();
+        File.WriteAllText(path, text);
     }
 }

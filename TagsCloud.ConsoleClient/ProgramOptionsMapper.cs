@@ -13,7 +13,7 @@ public class ProgramOptionsMapper
     private readonly IColorProvider colorProvider;
     private readonly IFontProvider fontProvider;
     private readonly ServiceResolver resolver;
-
+    
     public ProgramOptionsMapper
     (
         ServiceResolver resolver,
@@ -30,7 +30,7 @@ public class ProgramOptionsMapper
     {
         return new ProgramOptions
         {
-            FilePath = dto.FilePath,
+            InputWordsFilePath = dto.InputWordsFilePath,
             ImageOptions = new ImageOptions
             {
                 BackgroundColor = colorProvider.GetColor(dto.BackgroundColor),
@@ -41,7 +41,7 @@ public class ProgramOptionsMapper
                 TextColors = colorProvider.GetColors(dto.TextColor.Split(',').ToArray())
             },
             Algorithm = resolver.Resolve<ICloudLayouter>(dto.AlgorithmName),
-            WordsProvider = resolver.Resolve<IWordsProvider>(Path.GetExtension(dto.FilePath).Trim('.'))
+            WordsProvider = resolver.Resolve<IWordsProvider>(Path.GetExtension(dto.InputWordsFilePath).Trim('.'))
         };
     }
 }

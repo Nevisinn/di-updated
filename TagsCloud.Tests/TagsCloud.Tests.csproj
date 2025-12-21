@@ -28,4 +28,8 @@
         <ProjectReference Include="..\TagsCloud.ConsoleClient\TagsCloud.ConsoleClient.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Images\"/>
+    </ItemGroup>
+
 </Project>

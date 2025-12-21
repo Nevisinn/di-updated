@@ -4,7 +4,7 @@ using TagsCloud.Infrastructure.Services.WordsProcessing.WordsHandlers;
 namespace TagsCloud.Test.WordsPreprocessorTests.WordsHandlersTests;
 
 [TestFixture]
-public class BoringWordsHandlerTests //TODO: BoringWordsHandlerTests.cs - тесты на null/пустые списки/дубликаты и т.д.
+public class BoringWordsHandlerTests
 {
     private readonly List<string> text = ["Hello", "KONTUR", "test"];
 

@@ -5,9 +5,9 @@ namespace TagsCloud.Dtos;
 public class ConsoleProgramOptionsDto
 {
     [Option('p', "path", Required = true, HelpText = "Путь до файла со словами (txt, doc, docx)")]
-    public string FilePath { get; init; }
+    public required string InputWordsFilePath { get; init; }
 
-    [Option('a', "algorithm", HelpText = "Алгоритм формирования облака")]
+    [Option('a', "algorithm", HelpText = "Алгоритм формирования облака (Circular)")]
     public string AlgorithmName { get; init; } = "Circular";
 
     [Option('f', "format", HelpText = "Формат изображения (Png, Jpg, Bmp)")]
@@ -16,8 +16,8 @@ public class ConsoleProgramOptionsDto
     [Option("bg", HelpText = "Цвет заднего фона")]
     public string BackgroundColor { get; init; } = "black";
 
-    [Option("cs", HelpText = "Стиль цвета текста")]
-    public string ColorScheme { get; init; } = "LinearGradient";
+    [Option("cs", HelpText = "Стиль цвета текста (Solid, LinearGradient)")]
+    public string ColorScheme { get; init; } = "Solid";
 
     [Option("width", HelpText = "Ширина изображения")]
     public int ImageWidth { get; init; } = 1000;

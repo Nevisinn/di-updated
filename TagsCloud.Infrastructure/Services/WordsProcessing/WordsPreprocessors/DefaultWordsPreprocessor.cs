@@ -12,12 +12,19 @@ public class DefaultWordsPreprocessor : IWordsPreprocessor
     }
 
     public List<string> Process(List<string> words)
-    {
+    {   
+        if (wordsHandlers == null)
+            throw new ArgumentNullException("Обработчики не найдены");
+        
+        if (words.Any(word => word.Any(c => !char.IsLetter(c))))
+            throw new ArgumentException(
+                "Слова должны состоять только из букв и быть записаны по одному в каждой строке");
+
         var handlersList = wordsHandlers.ToList();
 
         for (var i = 0; i < handlersList.Count - 1; i++)
             handlersList[i].NextHandler = handlersList[i + 1];
 
-        return handlersList.First().Handle(words);
+        return handlersList.First().Handle(words).Select(w => w.ToLower()).ToList();
     }
 }

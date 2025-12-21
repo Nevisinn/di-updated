@@ -1,75 +1,93 @@
-/*using System.Drawing;
+using System.Drawing;
 using System.Drawing.Imaging;
 using FakeItEasy;
 using FluentAssertions;
-using TagsCloud.Domain.Models;
-using TagsCloud.Infrastructure.Services.ImageGeneration;
+using TagsCloud.App.Abstractions.LayoutAlgorithm;
+using TagsCloud.App.Abstractions.WordsProcessing;
+using TagsCloud.App.Models;
 using TagsCloud.Infrastructure.Services.ImageGeneration.CloudVisualizers;
-using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
-using TagsCloud.Infrastructure.Services.LayoutAlgorithm.Spirals;
-using TagsCloud.Infrastructure.Services.WordsProcessing;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsHandlers;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsPreprocessors;
+using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
 
 namespace TagsCloud.Test.ImageGenerationTests.CloudVisualizerTests;
 
 [TestFixture]
-public class FileCloudVisualizerTests //TODO: FileCloudVisualizerTests.cs проверить не только существование файла, но и корректность
+public class FileCloudVisualizerTests
 {
+    [TearDown]
+    public void TearDown()
+    {
+        if (File.Exists(outputImageFilePath))
+            File.Delete(outputImageFilePath);
+    }
 
-    private FileCloudVisualizer visualizer;
-    private ProgramOptions options;
-    private string filePath;
+    private readonly FileCloudVisualizer visualizer;
+    private readonly ProgramOptions options;
+    private readonly string outputImageFilePath;
 
-    private List<string> words =
+    private readonly List<string> words =
     [
-        "csharp",
-        "architecture",
-        "design",
+        "Привет",
+        "тест",
+        "Контур",
+        "Школа"
     ];
 
     public FileCloudVisualizerTests()
     {
-        options = new ProgramOptions();
-        filePath = Path.Combine(Path.GetTempPath(), "test", $"{options.ImageFormat}");
-        var center = new Point(0, 0);
-        var cloudLayouter = new CircularCloudLayouter(center, new ArchimedeanSpiral(center));
-        visualizer = new FileCloudVisualizer(options, cloudLayouter, new DefaultWordsPreprocessor(new WordsHandler()),
-            new WordsMeasurer() );
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        if (File.Exists(filePath))
-            File.Delete(filePath);
+        var wordsPreprocessor = A.Fake<IWordsPreprocessor>();
+        var layouter = A.Fake<ICloudLayouter>();
+        options = new ProgramOptions
+        {
+            Algorithm = layouter,
+            InputWordsFilePath = "",
+            ImageOptions = new ImageOptions
+            {
+                BackgroundColor = Color.Black,
+                ColorScheme = new OneColorScheme(),
+                Font = new Font("Arial", 12),
+                ImageSize = new Size(1000, 1000),
+                TextColors = [Color.Indigo],
+                ImageFormat = ImageFormat.Png
+            },
+            WordsProvider = A.Fake<IWordsProvider>()
+        };
+        visualizer = new FileCloudVisualizer(wordsPreprocessor);
+        var preProcessedWords = new List<string> { "привет", "контур", "школа" };
+        var workingDirectory = Environment.CurrentDirectory;
+        var projectDirectory = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
+        outputImageFilePath = @$"{projectDirectory}\Images\cloud_with_{preProcessedWords.Count}_words" +
+                              $".{options.ImageOptions.ImageFormat}";
+        A.CallTo(() => layouter.PutNextRectangle(A<Size>._))
+            .Returns(new Rectangle(0, 0, 10, 10));
+        A.CallTo(() => wordsPreprocessor.Process(words))
+            .Returns(preProcessedWords);
     }
 
     [Test]
     public void Visualize_ShouldCreateFile()
     {
-        visualizer.Visualize(words);
+        visualizer.VisualizeWordsWithOptions(words, options);
 
-        File.Exists(filePath).Should().BeTrue();
+        File.Exists(outputImageFilePath).Should().BeTrue();
     }
 
     [Test]
     public void Visualize_ShouldCreateFileWithCorrectExtension()
     {
-        visualizer.Visualize(words);
+        visualizer.VisualizeWordsWithOptions(words, options);
 
-        File.Exists(filePath).Should().BeTrue();
-        Path.GetExtension(filePath)
+        File.Exists(outputImageFilePath).Should().BeTrue();
+        Path.GetExtension(outputImageFilePath)
             .Should()
-            .Be("." + options.ImageFormat.ToString().ToLower());
+            .Be("." + options.ImageOptions.ImageFormat);
     }
 
     [Test]
     public void Visualize_ShouldCreateNonEmptyFile()
     {
-        visualizer.Visualize(words);
+        visualizer.VisualizeWordsWithOptions(words, options);
 
-        var fileInfo = new FileInfo(filePath);
+        var fileInfo = new FileInfo(outputImageFilePath);
 
         fileInfo.Exists.Should().BeTrue();
         fileInfo.Length.Should().BeGreaterThan(0);
@@ -78,13 +96,11 @@ public class FileCloudVisualizerTests //TODO: FileCloudVisualizerTests.cs про
     [Test]
     public void Visualize_ShouldCreateImageWithCorrectResolution()
     {
-        visualizer.Visualize(words);
+        visualizer.VisualizeWordsWithOptions(words, options);
 
-        using var bitmap = new Bitmap(filePath);
+        using var bitmap = new Bitmap(outputImageFilePath);
 
-        bitmap.Width.Should().Be(options.ImageSize.Width);
-        bitmap.Height.Should().Be(options.ImageSize.Height);
+        bitmap.Width.Should().Be(options.ImageOptions.ImageSize.Width);
+        bitmap.Height.Should().Be(options.ImageOptions.ImageSize.Height);
     }
-
-}*/
-
+}

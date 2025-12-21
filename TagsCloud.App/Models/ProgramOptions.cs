@@ -5,7 +5,7 @@ namespace TagsCloud.App.Models;
 
 public class ProgramOptions
 {
-    public required string FilePath { get; init; }
+    public required string InputWordsFilePath { get; init; }
     public required ImageOptions ImageOptions { get; init; }
     public ICloudLayouter Algorithm { get; init; }
     public IWordsProvider WordsProvider { get; init; }
