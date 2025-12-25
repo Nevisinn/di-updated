@@ -1,5 +1,4 @@
 using Autofac;
-using TagsCloud.App.Abstractions.LayoutAlgorithm;
 using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
 using TagsCloud.Infrastructure.Services.LayoutAlgorithm.Spirals;
 

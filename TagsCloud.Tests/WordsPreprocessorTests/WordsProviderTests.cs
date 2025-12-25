@@ -1,5 +1,6 @@
 using FluentAssertions;
-using TagsCloud.App.Abstractions.WordsProcessing;
+using TagsCloud.Infrastructure.Services.WordsProcessing.DocumentWriters;
+using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
 
 namespace TagsCloud.Test.WordsPreprocessorTests;
 

@@ -2,11 +2,13 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using FakeItEasy;
 using FluentAssertions;
-using TagsCloud.App.Abstractions.LayoutAlgorithm;
-using TagsCloud.App.Abstractions.WordsProcessing;
-using TagsCloud.App.Models;
+using TagsCloud.Infrastructure.Models;
+using TagsCloud.Infrastructure.Services.ImageGeneration;
 using TagsCloud.Infrastructure.Services.ImageGeneration.CloudVisualizers;
 using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
+using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
+using TagsCloud.Infrastructure.Services.WordsProcessing.WordsPreprocessors;
+using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
 
 namespace TagsCloud.Test.ImageGenerationTests.CloudVisualizerTests;
 

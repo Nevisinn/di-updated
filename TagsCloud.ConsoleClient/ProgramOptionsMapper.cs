@@ -1,10 +1,12 @@
 using System.Drawing;
-using TagsCloud.App.Abstractions.ImageGeneration;
-using TagsCloud.App.Abstractions.LayoutAlgorithm;
-using TagsCloud.App.Abstractions.WordsProcessing;
-using TagsCloud.App.Models;
 using TagsCloud.Dtos;
+using TagsCloud.Infrastructure.Models;
 using TagsCloud.Infrastructure.Services.ImageGeneration;
+using TagsCloud.Infrastructure.Services.ImageGeneration.ColorProvider;
+using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
+using TagsCloud.Infrastructure.Services.ImageGeneration.FontProviders;
+using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
+using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
 
 namespace TagsCloud;
 

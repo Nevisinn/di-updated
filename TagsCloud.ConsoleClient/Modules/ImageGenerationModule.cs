@@ -1,7 +1,7 @@
 using Autofac;
-using TagsCloud.App.Abstractions.ImageGeneration;
 using TagsCloud.Infrastructure.Services.ImageGeneration;
 using TagsCloud.Infrastructure.Services.ImageGeneration.CloudVisualizers;
+using TagsCloud.Infrastructure.Services.ImageGeneration.ColorProvider;
 using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
 using TagsCloud.Infrastructure.Services.ImageGeneration.FontProviders;
 

@@ -1,6 +1,6 @@
 using CommandLine;
-using TagsCloud.App.Abstractions.ImageGeneration;
 using TagsCloud.Dtos;
+using TagsCloud.Infrastructure.Services.ImageGeneration.CloudVisualizers;
 
 namespace TagsCloud;
 

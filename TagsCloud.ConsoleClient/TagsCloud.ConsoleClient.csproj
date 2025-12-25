@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\TagsCloud.Infrastructure\TagsCloud.Infrastructure.csproj"/>
+        <ProjectReference Include="..\TagsCloud.Core\TagsCloud.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
