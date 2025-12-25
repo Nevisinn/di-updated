@@ -1,6 +1,5 @@
 using System.Reflection;
 using Autofac;
-using FakeItEasy;
 using FluentAssertions;
 using TagsCloud.Modules;
 

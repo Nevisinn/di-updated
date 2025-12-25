@@ -36,6 +36,8 @@ public class CircularCloudLayouter : ICloudLayouter
         spiral.Reset();
     }
 
+    public string Name => "Circular";
+
     private Rectangle PlaceNext(Size size)
     {
         while (true)
@@ -72,6 +74,4 @@ public class CircularCloudLayouter : ICloudLayouter
 
         return moved;
     }
-
-    public string Name => "Circular";
 }

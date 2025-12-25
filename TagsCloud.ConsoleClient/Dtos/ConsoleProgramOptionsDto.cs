@@ -6,8 +6,8 @@ public class ConsoleProgramOptionsDto
 {
     [Option('p', "path", Required = true, HelpText = "Путь до файла со словами (txt, doc, docx)")]
     public required string InputWordsFilePath { get; init; }
-    
-    [Option( "boringWordsPath", Required = true, HelpText = "Путь до файла со скучными словами (txt, doc, docx)")]
+
+    [Option("boringWordsPath", Required = true, HelpText = "Путь до файла со скучными словами (txt, doc, docx)")]
     public required string InputBoringWordsFilePath { get; init; }
 
     [Option('a', "algorithm", HelpText = "Алгоритм формирования облака (Circular)")]

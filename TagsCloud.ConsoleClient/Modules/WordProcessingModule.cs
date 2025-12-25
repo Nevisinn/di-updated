@@ -1,6 +1,5 @@
 using Autofac;
 using TagsCloud.Infrastructure.Selectors;
-using TagsCloud.Infrastructure.Services.WordsProcessing;
 using TagsCloud.Infrastructure.Services.WordsProcessing.DocumentWriters;
 using TagsCloud.Infrastructure.Services.WordsProcessing.FileValidator;
 using TagsCloud.Infrastructure.Services.WordsProcessing.WordsHandlers;

@@ -1,6 +1,5 @@
 using Autofac;
 using TagsCloud.Infrastructure.Selectors;
-using TagsCloud.Infrastructure.Services.ImageGeneration;
 using TagsCloud.Infrastructure.Services.ImageGeneration.CloudVisualizers;
 using TagsCloud.Infrastructure.Services.ImageGeneration.ColorProvider;
 using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
@@ -18,7 +17,7 @@ public class ImageGenerationModule : Module
         builder.RegisterType<LinearGradientColorScheme>().As<IColorSchemeProvider>();
 
         builder.RegisterType<ColorSchemeSelector>().As<IColorSchemeSelector>();
-        
+
         builder.RegisterType<FileCloudVisualizer>().As<ICloudVisualizer>();
 
         builder.RegisterType<SystemFontProvider>().As<IFontProvider>();

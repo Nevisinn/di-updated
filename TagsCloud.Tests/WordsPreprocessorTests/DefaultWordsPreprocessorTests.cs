@@ -14,4 +14,3 @@ public abstract class DefaultWordsPreprocessorTests
         createPreprocessor.Should().Throw<ArgumentNullException>();
     }
 }
-

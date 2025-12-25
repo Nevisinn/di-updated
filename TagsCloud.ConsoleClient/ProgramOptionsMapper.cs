@@ -4,25 +4,22 @@ using TagsCloud.Infrastructure.Models;
 using TagsCloud.Infrastructure.Selectors;
 using TagsCloud.Infrastructure.Services.ImageGeneration;
 using TagsCloud.Infrastructure.Services.ImageGeneration.ColorProvider;
-using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
 using TagsCloud.Infrastructure.Services.ImageGeneration.FontProviders;
-using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
 
 namespace TagsCloud;
 
 public class ProgramOptionsMapper
 {
-    private readonly IColorProvider colorProvider;
-    private readonly IFontProvider fontProvider;
-    private readonly IColorSchemeSelector colorSchemeSelector;
-    private readonly IWordsProviderSelector wordsProviderSelector;
     private readonly IAlgorithmSelector algorithmSelector;
-    
+    private readonly IColorProvider colorProvider;
+    private readonly IColorSchemeSelector colorSchemeSelector;
+    private readonly IFontProvider fontProvider;
+    private readonly IWordsProviderSelector wordsProviderSelector;
+
     public ProgramOptionsMapper
     (
         IColorProvider colorProvider,
-        IFontProvider fontProvider, 
+        IFontProvider fontProvider,
         IColorSchemeSelector colorSchemeSelector,
         IWordsProviderSelector wordsProviderSelector,
         IAlgorithmSelector algorithmSelector)

@@ -3,7 +3,6 @@ using System.Drawing.Imaging;
 using FakeItEasy;
 using FluentAssertions;
 using TagsCloud.Infrastructure.Models;
-using TagsCloud.Infrastructure.Services.ImageGeneration;
 using TagsCloud.Infrastructure.Services.ImageGeneration.CloudVisualizers;
 using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
 using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;

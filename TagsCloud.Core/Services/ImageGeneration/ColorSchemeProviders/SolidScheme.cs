@@ -12,6 +12,6 @@ public class SolidScheme : IColorSchemeProvider
 
         return new SolidBrush(imageOptions.TextColors[0]);
     }
-    
+
     public string Name => "Solid";
 }

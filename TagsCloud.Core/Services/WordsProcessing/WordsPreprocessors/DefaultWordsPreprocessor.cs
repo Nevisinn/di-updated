@@ -23,15 +23,9 @@ public class DefaultWordsPreprocessor : IWordsPreprocessor
 
         var handlersList = wordsHandlers.ToList();
 
-        foreach (var handler in handlersList)
-        {
-            handler.Options = options;
-        }
-        
-        for (var i = 0; i < handlersList.Count - 1; i++)
-        {
-            handlersList[i].NextHandler = handlersList[i + 1];
-        }
+        foreach (var handler in handlersList) handler.Options = options;
+
+        for (var i = 0; i < handlersList.Count - 1; i++) handlersList[i].NextHandler = handlersList[i + 1];
 
         return handlersList.First().Handle(words).Select(w => w.ToLower()).ToList();
     }

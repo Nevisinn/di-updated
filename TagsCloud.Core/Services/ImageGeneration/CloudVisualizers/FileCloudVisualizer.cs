@@ -20,7 +20,7 @@ public class FileCloudVisualizer : ICloudVisualizer
         var handledWords = wordsPreprocessor.Process(words, options);
 
         var wordsCounts = WordsCounter.GetWordsCounts(handledWords);
-        
+
         var wordsSizes = WordsMeasurer.GetWordsSizes(wordsCounts, options.ImageOptions.Font);
 
         var workingDirectory = Environment.CurrentDirectory;
@@ -30,7 +30,7 @@ public class FileCloudVisualizer : ICloudVisualizer
     }
 
     private void CreateAndSave
-    (
+    (   
         Dictionary<string, Size> wordsSizes,
         Dictionary<string, int> wordsCounts,
         string currentDirectoryPath,
