@@ -1,4 +1,5 @@
 using Autofac;
+using TagsCloud.Infrastructure.Selectors;
 using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
 using TagsCloud.Infrastructure.Services.LayoutAlgorithm.Spirals;
 
@@ -10,7 +11,8 @@ public class LayoutAlgorithmModule : Module
     {
         builder.RegisterType<ArchimedeanSpiral>().As<ISpiral>();
 
-        builder.RegisterType<CircularCloudLayouter>()
-            .Named<ICloudLayouter>("Circular");
+        builder.RegisterType<CircularCloudLayouter>().As<ICloudLayouter>();
+
+        builder.RegisterType<AlgorithmSelector>().As<IAlgorithmSelector>();
     }
 }

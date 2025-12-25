@@ -43,7 +43,7 @@ public class CloudLayouterTests
         {
             BackgroundColor = Color.Black,
             ImageFormat = ImageFormat.Png,
-            ColorScheme = new OneColorScheme(),
+            ColorScheme = new SolidScheme(),
             ImageSize = new Size(1000, 1000),
             Font = new Font("Arial", 14),
             TextColors = [Color.Red]

@@ -1,5 +1,9 @@
+using FakeItEasy;
 using FluentAssertions;
+using TagsCloud.Infrastructure.Models;
+using TagsCloud.Infrastructure.Selectors;
 using TagsCloud.Infrastructure.Services.WordsProcessing.WordsHandlers;
+using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
 
 namespace TagsCloud.Test.WordsPreprocessorTests.WordsHandlersTests;
 
@@ -7,13 +11,39 @@ namespace TagsCloud.Test.WordsPreprocessorTests.WordsHandlersTests;
 public class BoringWordsHandlerTests
 {
     private readonly List<string> text = ["Hello", "KONTUR", "test"];
+    private readonly IWordsProviderSelector selector = A.Fake<IWordsProviderSelector>();
+    private readonly IWordsProvider provider = A.Fake<IWordsProvider>();
+    private readonly BoringWordsHandler boringWordsHandler;
+    private readonly ProgramOptions options = new()
+    {
+        InputWordsFilePath = "",
+        InputBoringWordsFilePath = "t.txt",
+        ImageOptions = null
+    };
 
+    private List<string> boringWords;
+
+    public BoringWordsHandlerTests()
+    {
+        boringWordsHandler = new BoringWordsHandler(selector)
+        {
+            Options = options
+        };
+    }
+
+    [SetUp]
+    public void SetUp()
+    {
+        A.CallTo(() => selector.Select(A<string>._)).Returns(provider);
+    }
+    
     [Test]
     public void Handle_ShouldExcludeBoringWords()
     {
-        var boringWordsHandler = new BoringWordsHandler(["test"]);
-
-        var handledText = boringWordsHandler.Handle(text);
+        boringWords = ["test"];
+        A.CallTo(() => provider.ReadFile(A<string>._)).Returns(boringWords);
+        
+        var handledText = boringWordsHandler.Handle(text);  
 
         handledText.Should().Equal("Hello", "KONTUR");
     }
@@ -21,8 +51,9 @@ public class BoringWordsHandlerTests
     [Test]
     public void Handle_ShouldNotExcludeWithEmptyBoringWords()
     {
-        var boringWordsHandler = new BoringWordsHandler([]);
-
+        boringWords = [];
+        A.CallTo(() => provider.ReadFile(A<string>._)).Returns(boringWords);
+        
         var handledText = boringWordsHandler.Handle(text);
 
         handledText.Should().Equal("Hello", "KONTUR", "test");
@@ -31,8 +62,9 @@ public class BoringWordsHandlerTests
     [Test]
     public void Handle_ShouldThrow_WhenBoringWordIsNull()
     {
-        var boringWordsHandler = new BoringWordsHandler([null]);
-
+        boringWords = [null];
+        A.CallTo(() => provider.ReadFile(A<string>._)).Returns(boringWords);
+        
         var handleText = () => boringWordsHandler.Handle(text);
 
         handleText.Should().Throw<ArgumentException>("Каждое скучное слово должно быть непустой строкой и " +
@@ -42,8 +74,9 @@ public class BoringWordsHandlerTests
     [Test]
     public void Handle_ShouldThrow_WhenBoringWordIsEmpty()
     {
-        var boringWordsHandler = new BoringWordsHandler([""]);
-
+        boringWords = [""];
+        A.CallTo(() => provider.ReadFile(A<string>._)).Returns(boringWords);
+        
         var handleText = () => boringWordsHandler.Handle(text);
 
         handleText.Should().Throw<ArgumentException>("Каждое скучное слово должно быть непустой строкой и " +
@@ -53,8 +86,9 @@ public class BoringWordsHandlerTests
     [Test]
     public void Handle_ShouldThrow_WhenBoringWordHaveSpecialSymbols()
     {
-        var boringWordsHandler = new BoringWordsHandler(["t#e$x@t"]);
-
+        boringWords = ["t#e$x@t"];
+        A.CallTo(() => provider.ReadFile(A<string>._)).Returns(boringWords);
+        
         var handleText = () => boringWordsHandler.Handle(text);
 
         handleText.Should().Throw<ArgumentException>("Каждое скучное слово должно быть непустой строкой и " +
@@ -64,8 +98,9 @@ public class BoringWordsHandlerTests
     [Test]
     public void Handle_ShouldThrow_WhenBoringWordIsDigit()
     {
-        var boringWordsHandler = new BoringWordsHandler(["123"]);
-
+        boringWords = ["123"];
+        A.CallTo(() => provider.ReadFile(A<string>._)).Returns(boringWords);
+        
         var handleText = () => boringWordsHandler.Handle(text);
 
         handleText.Should().Throw<ArgumentException>("Каждое скучное слово должно быть непустой строкой и " +
@@ -75,8 +110,9 @@ public class BoringWordsHandlerTests
     [Test]
     public void Handle_ShouldThrow_WhenBoringWordsHaveDuplicate()
     {
-        var boringWordsHandler = new BoringWordsHandler(["test", "test"]);
-
+        boringWords = ["test", "test"];
+        A.CallTo(() => provider.ReadFile(A<string>._)).Returns(boringWords);
+        
         var handledText = boringWordsHandler.Handle(text);
 
         handledText.Should().Equal("Hello", "KONTUR");
@@ -85,8 +121,9 @@ public class BoringWordsHandlerTests
     [Test]
     public void Handle_ShouldThrow_WhenBoringWordsIsNull()
     {
-        var boringWordsHandler = new BoringWordsHandler(null);
-
+        boringWords = null;
+        A.CallTo(() => provider.ReadFile(A<string>._))!.Returns(boringWords);
+        
         var handledText = () => boringWordsHandler.Handle(text);
 
         handledText.Should().Throw<ArgumentException>("Список скучных слов не может быть null");

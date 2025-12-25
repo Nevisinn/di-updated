@@ -28,4 +28,5 @@ public class TxtWordsProvider : IWordsProvider
     }
 
     public string FileFormat => "txt";
+    public string Name => FileFormat;
 }

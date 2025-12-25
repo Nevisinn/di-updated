@@ -6,4 +6,6 @@ public class TxtWriter : IDocumentWriter
     {
         File.WriteAllText(path, text);
     }
+
+    public string Name => "txt";
 }

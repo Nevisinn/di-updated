@@ -3,7 +3,7 @@ using TagsCloud.Infrastructure.Models;
 
 namespace TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
 
-public class OneColorScheme : IColorSchemeProvider
+public class SolidScheme : IColorSchemeProvider
 {
     public Brush GetColorScheme(ImageOptions imageOptions)
     {
@@ -12,4 +12,6 @@ public class OneColorScheme : IColorSchemeProvider
 
         return new SolidBrush(imageOptions.TextColors[0]);
     }
+    
+    public string Name => "Solid";
 }

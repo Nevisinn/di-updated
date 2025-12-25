@@ -10,6 +10,8 @@ public class DocxWriter : IDocumentWriter
         var section = document.AddSection();
         var paragraph = section.AddParagraph();
         paragraph.AppendText(text);
-        document.SaveToFile(path, FileFormat.Doc);
+        document.SaveToFile(path, FileFormat.Docx);
     }
+
+    public string Name => "docx";
 }

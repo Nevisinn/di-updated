@@ -17,7 +17,7 @@ public class FileCloudVisualizer : ICloudVisualizer
 
     public void VisualizeWordsWithOptions(List<string> words, ProgramOptions options)
     {
-        var handledWords = wordsPreprocessor.Process(words);
+        var handledWords = wordsPreprocessor.Process(words, options);
 
         var wordsCounts = WordsCounter.GetWordsCounts(handledWords);
         

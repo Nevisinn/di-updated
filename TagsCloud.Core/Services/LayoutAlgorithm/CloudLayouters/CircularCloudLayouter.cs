@@ -72,4 +72,6 @@ public class CircularCloudLayouter : ICloudLayouter
 
         return moved;
     }
+
+    public string Name => "Circular";
 }

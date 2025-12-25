@@ -31,4 +31,5 @@ public class DocxWordsProvider : IWordsProvider
     }
 
     public string FileFormat => "docx";
+    public string Name => FileFormat;
 }

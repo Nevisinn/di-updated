@@ -32,4 +32,5 @@ public class DocWordsProvider : IWordsProvider
     }
 
     public string FileFormat => "doc";
+    public string Name => FileFormat;
 }

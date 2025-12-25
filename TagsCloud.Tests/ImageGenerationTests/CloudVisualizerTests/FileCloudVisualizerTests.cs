@@ -42,10 +42,11 @@ public class FileCloudVisualizerTests
         {
             Algorithm = layouter,
             InputWordsFilePath = "",
+            InputBoringWordsFilePath = "",
             ImageOptions = new ImageOptions
             {
                 BackgroundColor = Color.Black,
-                ColorScheme = new OneColorScheme(),
+                ColorScheme = new SolidScheme(),
                 Font = new Font("Arial", 12),
                 ImageSize = new Size(1000, 1000),
                 TextColors = [Color.Indigo],
@@ -61,7 +62,7 @@ public class FileCloudVisualizerTests
                               $".{options.ImageOptions.ImageFormat}";
         A.CallTo(() => layouter.PutNextRectangle(A<Size>._))
             .Returns(new Rectangle(0, 0, 10, 10));
-        A.CallTo(() => wordsPreprocessor.Process(words))
+        A.CallTo(() => wordsPreprocessor.Process(words, options))
             .Returns(preProcessedWords);
     }
 

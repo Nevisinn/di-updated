@@ -1,6 +1,7 @@
 using System.Drawing;
 using TagsCloud.Dtos;
 using TagsCloud.Infrastructure.Models;
+using TagsCloud.Infrastructure.Selectors;
 using TagsCloud.Infrastructure.Services.ImageGeneration;
 using TagsCloud.Infrastructure.Services.ImageGeneration.ColorProvider;
 using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
@@ -14,18 +15,23 @@ public class ProgramOptionsMapper
 {
     private readonly IColorProvider colorProvider;
     private readonly IFontProvider fontProvider;
-    private readonly ServiceResolver resolver;
+    private readonly IColorSchemeSelector colorSchemeSelector;
+    private readonly IWordsProviderSelector wordsProviderSelector;
+    private readonly IAlgorithmSelector algorithmSelector;
     
     public ProgramOptionsMapper
     (
-        ServiceResolver resolver,
         IColorProvider colorProvider,
-        IFontProvider fontProvider
-    )
+        IFontProvider fontProvider, 
+        IColorSchemeSelector colorSchemeSelector,
+        IWordsProviderSelector wordsProviderSelector,
+        IAlgorithmSelector algorithmSelector)
     {
-        this.resolver = resolver;
         this.colorProvider = colorProvider;
         this.fontProvider = fontProvider;
+        this.colorSchemeSelector = colorSchemeSelector;
+        this.wordsProviderSelector = wordsProviderSelector;
+        this.algorithmSelector = algorithmSelector;
     }
 
     public ProgramOptions Map(ConsoleProgramOptionsDto dto)
@@ -33,17 +39,18 @@ public class ProgramOptionsMapper
         return new ProgramOptions
         {
             InputWordsFilePath = dto.InputWordsFilePath,
+            InputBoringWordsFilePath = dto.InputBoringWordsFilePath,
             ImageOptions = new ImageOptions
             {
                 BackgroundColor = colorProvider.GetColor(dto.BackgroundColor),
-                ColorScheme = resolver.Resolve<IColorSchemeProvider>(dto.ColorScheme),
+                ColorScheme = colorSchemeSelector.Select(dto.ColorScheme),
                 Font = fontProvider.GetFont(dto.FontName, dto.FontSize),
                 ImageFormat = ImageFormatParser.Parse(dto.ImageFormat),
                 ImageSize = new Size(dto.ImageWidth, dto.ImageHeight),
                 TextColors = colorProvider.GetColors(dto.TextColor.Split(',').ToArray())
             },
-            Algorithm = resolver.Resolve<ICloudLayouter>(dto.AlgorithmName),
-            WordsProvider = resolver.Resolve<IWordsProvider>(Path.GetExtension(dto.InputWordsFilePath).Trim('.'))
+            Algorithm = algorithmSelector.Select(dto.AlgorithmName),
+            WordsProvider = wordsProviderSelector.Select(Path.GetExtension(dto.InputWordsFilePath).Trim('.'))
         };
     }
 }

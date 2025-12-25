@@ -17,4 +17,6 @@ public class LinearGradientColorScheme : IColorSchemeProvider
 
         return new LinearGradientBrush(bounds, firstColor, secondColor, LinearGradientMode.Horizontal);
     }
+
+    public string Name => "LinearGradient";
 }

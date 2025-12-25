@@ -1,5 +1,6 @@
 using System.Reflection;
 using Autofac;
+using FakeItEasy;
 using FluentAssertions;
 using TagsCloud.Modules;
 
@@ -25,6 +26,7 @@ public class ConsoleUiTests
     }
 
     private readonly string inputFilePath;
+    private readonly string boringWordsFilePath;
     private readonly string imagesDir;
     private string outputImagePath;
     private IContainer container;
@@ -34,6 +36,7 @@ public class ConsoleUiTests
         var workingDirectory = Environment.CurrentDirectory;
         var projectDirectory = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
         inputFilePath = Path.Combine($"{projectDirectory}", "ConsoleClientTests", "input.txt");
+        boringWordsFilePath = Path.Combine($"{projectDirectory}", "ConsoleClientTests", "boringWords.txt");
         imagesDir = Path.Combine($"{projectDirectory}", "Images");
         outputImagePath = "";
     }
@@ -43,7 +46,8 @@ public class ConsoleUiTests
     {
         var args = new[]
         {
-            "--p", $"{inputFilePath}"
+            "--p", $"{inputFilePath}",
+            "--boringWordsPath", $"{boringWordsFilePath}"
         };
         var consoleUi = container.Resolve<ConsoleUi>();
 
@@ -64,6 +68,7 @@ public class ConsoleUiTests
         var args = new[]
         {
             "--p", inputFilePath,
+            "--boringWordsPath", $"{boringWordsFilePath}",
             "--f", format
         };
         var consoleUi = container.Resolve<ConsoleUi>();
@@ -83,6 +88,7 @@ public class ConsoleUiTests
         var args = new[]
         {
             "--p", inputFilePath,
+            "--boringWordsPath", $"{boringWordsFilePath}",
             "--a", algorithm
         };
         var consoleUi = container.Resolve<ConsoleUi>();
@@ -102,6 +108,7 @@ public class ConsoleUiTests
         var args = new[]
         {
             "--path", inputFilePath,
+            "--boringWordsPath", $"{boringWordsFilePath}",
             "--bg", bgColor
         };
         var consoleUi = container.Resolve<ConsoleUi>();
@@ -121,7 +128,7 @@ public class ConsoleUiTests
         var args = new[]
         {
             "--path", inputFilePath,
-
+            "--boringWordsPath", $"{boringWordsFilePath}",
             "--text-color", textColor
         };
         var consoleUi = container.Resolve<ConsoleUi>();
@@ -141,7 +148,7 @@ public class ConsoleUiTests
         var args = new[]
         {
             "--path", inputFilePath,
-
+            "--boringWordsPath", $"{boringWordsFilePath}",
             "--font-name", fontName
         };
         var consoleUi = container.Resolve<ConsoleUi>();

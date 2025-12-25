@@ -10,6 +10,8 @@ public class DocWriter : IDocumentWriter
         var section = document.AddSection();
         var paragraph = section.AddParagraph();
         paragraph.AppendText(text);
-        document.SaveToFile(path, FileFormat.Docx);
+        document.SaveToFile(path, FileFormat.Doc);
     }
+
+    public string Name => "doc";
 }
